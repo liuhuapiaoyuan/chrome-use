@@ -4,9 +4,10 @@ import {
 } from "@aipexstudio/aipex-core";
 import { useCallback, useEffect, useState } from "react";
 import {
-  BROWSER_CLI_STORAGE_KEYS,
+  DEFAULT_AUTOMATION_PREFERENCE,
   getAutomationPreference,
   setAutomationPreference,
+  BROWSER_CLI_STORAGE_KEYS,
 } from "../lib/automation-preference";
 
 export function useAutomationMode(): [
@@ -14,7 +15,9 @@ export function useAutomationMode(): [
   (mode: AutomationMode) => Promise<void>,
   boolean,
 ] {
-  const [mode, setMode] = useState<AutomationMode>("focus");
+  const [mode, setMode] = useState<AutomationMode>(
+    DEFAULT_AUTOMATION_PREFERENCE,
+  );
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

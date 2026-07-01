@@ -15,11 +15,22 @@ import { ChromeStorageAdapter } from "../storage/storage-adapter";
 
 const storage = new ChromeStorageAdapter<string>();
 
+let runtimeOverride: AutomationMode | null = null;
+
+/** 临时覆盖 automation mode（如 browser-cli 单次 API 调用期间）。 */
+export function setAutomationModeOverride(mode: AutomationMode | null): void {
+  runtimeOverride = mode;
+}
+
 /**
  * Get automation mode from storage
  * Returns 'focus' or 'background' based on user selection
  */
 export async function getAutomationMode(): Promise<AutomationMode> {
+  if (runtimeOverride !== null) {
+    return runtimeOverride;
+  }
+
   try {
     const value = await storage.load(STORAGE_KEYS.AUTOMATION_MODE);
     const mode = validateAutomationMode(value);

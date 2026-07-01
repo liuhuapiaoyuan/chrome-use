@@ -3,11 +3,14 @@ import {
   STORAGE_KEYS,
   validateAutomationMode,
 } from "@aipexstudio/aipex-core";
+import { setAutomationModeOverride } from "@aipexstudio/browser-runtime/runtime/automation-mode";
 
 /** Popup 偏好：仅表示 API 调用时是否使用后台行为，不持久影响全局。 */
 export const BROWSER_CLI_STORAGE_KEYS = {
   AUTOMATION_PREFERENCE: "browser_cli_automation_preference",
 } as const;
+
+export const DEFAULT_AUTOMATION_PREFERENCE: AutomationMode = "background";
 
 const TAB_GUARD_GRACE_MS = 1000;
 
@@ -18,9 +21,11 @@ export async function getAutomationPreference(): Promise<AutomationMode> {
   const result = await chrome.storage.local.get(
     BROWSER_CLI_STORAGE_KEYS.AUTOMATION_PREFERENCE,
   );
-  return validateAutomationMode(
-    result[BROWSER_CLI_STORAGE_KEYS.AUTOMATION_PREFERENCE],
-  );
+  const value = result[BROWSER_CLI_STORAGE_KEYS.AUTOMATION_PREFERENCE];
+  if (value === undefined || value === null) {
+    return DEFAULT_AUTOMATION_PREFERENCE;
+  }
+  return validateAutomationMode(value);
 }
 
 export async function setAutomationPreference(
@@ -29,8 +34,8 @@ export async function setAutomationPreference(
   await chrome.storage.local.set({
     [BROWSER_CLI_STORAGE_KEYS.AUTOMATION_PREFERENCE]: mode,
   });
-  // 偏好切换不持久写入全局 automation_mode，避免影响用户日常浏览。
   await chrome.storage.local.set({ [STORAGE_KEYS.AUTOMATION_MODE]: "focus" });
+  setAutomationModeOverride(null);
 }
 
 export function isTabGuardActive(): boolean {
@@ -38,8 +43,8 @@ export function isTabGuardActive(): boolean {
 }
 
 /**
- * 若偏好为 background：在 fn 执行期间临时写入 automation_mode=background，
- * 结束后立即恢复 focus；tab guard 额外保留短 grace 以捕获异步新开 tab。
+ * 若偏好为 background：在 fn 执行期间通过内存 override 启用后台模式，
+ * 工具可读 getAutomationMode()===background；结束后立即清除 override。
  */
 export async function runWithAutomationContext<T>(
   fn: () => Promise<T>,
@@ -53,18 +58,14 @@ export async function runWithAutomationContext<T>(
   tabGuardGraceTimer = undefined;
   activeApiCalls++;
 
-  await chrome.storage.local.set({
-    [STORAGE_KEYS.AUTOMATION_MODE]: "background",
-  });
+  setAutomationModeOverride("background");
 
   try {
     return await fn();
   } finally {
     activeApiCalls--;
+    setAutomationModeOverride(null);
     if (activeApiCalls === 0) {
-      await chrome.storage.local.set({
-        [STORAGE_KEYS.AUTOMATION_MODE]: "focus",
-      });
       tabGuardGraceTimer = setTimeout(() => {
         tabGuardGraceTimer = undefined;
       }, TAB_GUARD_GRACE_MS);

@@ -3,6 +3,7 @@
 // 由 content.ts 桥接 postMessage 转发）。所有调用统一走 dispatch()。
 
 import { STORAGE_KEYS } from "@aipexstudio/aipex-core";
+import { setAutomationModeOverride } from "@aipexstudio/browser-runtime/runtime/automation-mode";
 import {
   clearLog,
   getOriginSummary,
@@ -35,7 +36,8 @@ assertRouterSchemaConsistency(toolSchemas.map((s) => s.name));
 // Background 模式下，页面发起的 window.open / target=_blank 等打开行为改为背后打开。
 installBackgroundTabGuard();
 
-// 偏好与全局 automation_mode 分离；SW 启动时确保全局为 focus。
+// SW 唤醒时清除可能残留的 override，并确保全局 storage 为 focus。
+setAutomationModeOverride(null);
 void chrome.storage.local.set({ [STORAGE_KEYS.AUTOMATION_MODE]: "focus" });
 
 // ── 内部信封校验 ─────────────────────────────────────────────────────────
