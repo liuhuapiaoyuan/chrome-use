@@ -4,8 +4,40 @@
 //
 // 设计意图：当 externally_connectable 不允许或网页未配置 extensionId 时，
 // SDK 仍可透明工作。
+//
+// 后台自动化模式下，search_elements / click 等工具通过 tabs.sendMessage
+// 请求 DOM 快照；须在此响应 aipex:collect-dom-snapshot。
 
+import { collectDomSnapshot } from "@aipexstudio/dom-snapshot";
 import { PROTOCOL_NS, PROTOCOL_VERSION } from "./types";
+
+const DOM_SNAPSHOT_MESSAGE = "aipex:collect-dom-snapshot";
+
+chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+  if (
+    message?.type !== DOM_SNAPSHOT_MESSAGE &&
+    message?.request !== "collect-dom-snapshot"
+  ) {
+    return false;
+  }
+
+  void (async () => {
+    try {
+      const snapshot = collectDomSnapshot(document, message.options);
+      sendResponse({ success: true, data: snapshot });
+    } catch (error) {
+      sendResponse({
+        success: false,
+        error:
+          error instanceof Error
+            ? error.message
+            : "Failed to collect DOM snapshot",
+      });
+    }
+  })();
+
+  return true;
+});
 
 interface IncomingEnvelope {
   ns: typeof PROTOCOL_NS;

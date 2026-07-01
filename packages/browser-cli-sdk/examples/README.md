@@ -3,7 +3,7 @@
 ## 前置条件
 
 1. 安装并加载 `@aipexstudio/browser-cli-ext` 扩展（`chrome://extensions/` → 开发者模式 → 加载已解压扩展 → 选 `packages/browser-cli-ext/build/`）。
-2. 完成 SDK 构建：`pnpm --filter @aipexstudio/browser-cli-sdk build`（产物落在 `dist/`）。
+2. 完成 SDK 构建：`pnpm --filter @qzsy/browser-cli-sdk build`（产物落在 `dist/`）。
 
 ## 1. Vanilla HTML — `vanilla/index.html`
 
@@ -22,7 +22,7 @@ python -m http.server -d packages/browser-cli-sdk 3000
 把 `react-vite.tsx` 拷入你的 Vite 项目组件树，安装依赖：
 
 ```bash
-pnpm add @aipexstudio/browser-cli-sdk
+pnpm add @qzsy/browser-cli-sdk
 ```
 
 如果希望优先走 `externallyConnectable` 直连（更快、无需 content-script 注入），把扩展 ID 写入 `.env`：

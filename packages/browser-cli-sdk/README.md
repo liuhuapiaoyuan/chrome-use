@@ -1,4 +1,4 @@
-# @aipexstudio/browser-cli-sdk
+# @qzsy/browser-cli-sdk
 
 A thin TypeScript client for the **Browser-CLI** Chrome extension. Lets any web page
 invoke browser-automation tools (tabs, navigation, downloads, screenshots, etc.) via
@@ -19,7 +19,7 @@ If neither channel responds during the handshake, `create()` throws
 ## Install
 
 ```bash
-pnpm add @aipexstudio/browser-cli-sdk
+pnpm add @qzsy/browser-cli-sdk
 # or: npm i / yarn add
 ```
 
@@ -35,7 +35,7 @@ You also need the companion extension installed in Chrome:
 ## Quick start
 
 ```ts
-import { createBrowserCli } from "@aipexstudio/browser-cli-sdk";
+import { createBrowserCli } from "@qzsy/browser-cli-sdk";
 
 const cli = await createBrowserCli({
   // Optional. If omitted, only the content-bridge channel will be tried.
@@ -91,7 +91,7 @@ import {
   BrowserCliError,
   BrowserCliTimeoutError,
   BrowserCliNotAvailableError,
-} from "@aipexstudio/browser-cli-sdk";
+} from "@qzsy/browser-cli-sdk";
 ```
 
 | class                          | `code`           | meaning                                                  |
@@ -146,7 +146,7 @@ field on the `window.postMessage` payload.
 ## Build
 
 ```bash
-pnpm --filter @aipexstudio/browser-cli-sdk build
+pnpm --filter @qzsy/browser-cli-sdk build
 ```
 
 Produces `dist/index.js` (ESM), `dist/index.cjs` (CJS) and `dist/index.d.ts`.

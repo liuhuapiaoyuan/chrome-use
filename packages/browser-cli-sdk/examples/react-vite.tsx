@@ -5,7 +5,7 @@ import {
   createBrowserCli,
   BrowserCliError,
   type BrowserCli,
-} from "@aipexstudio/browser-cli-sdk";
+} from "@qzsy/browser-cli-sdk";
 
 export function CliDemo() {
   const cliRef = useRef<BrowserCli | null>(null);

@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Browser CLI",
   "version": "0.1.0",
-  "description": "Browser automation command channel for web pages via JS-SDK (browser-cli).",
+  "description": "面向网页的浏览器自动化命令通道（browser-cli JS-SDK）。",
   "icons": {
     "16": "assets/icon16.png",
     "48": "assets/icon48.png",

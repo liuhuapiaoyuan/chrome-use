@@ -3,7 +3,7 @@
 A **lightweight** Chrome extension (MV3) that exposes browser-automation tools to
 any web page through a single command channel — no Agent, no LLM, no chat UI.
 
-It is the runtime counterpart of [`@aipexstudio/browser-cli-sdk`](../browser-cli-sdk/README.md).
+It is the runtime counterpart of [`@qzsy/browser-cli-sdk`](../browser-cli-sdk/README.md).
 Web pages send `browser-cli` envelopes; this extension parses them, calls one of
 the 28 tools from `@aipexstudio/browser-runtime`, and returns a structured result.
 
@@ -29,6 +29,7 @@ the 28 tools from `@aipexstudio/browser-runtime`, and returns a structured resul
   per-group deep imports (Skill tools are intentionally excluded because they
   pull in a QuickJS/emscripten VM and violate the "lightweight channel" goal —
   see [Skill tools & bundle size](#skill-tools--bundle-size)).
+  Full reference: **[TOOLS.md](./TOOLS.md)** (capabilities, parameters, CLI conventions).
 - **Two channels**
   - `chrome.runtime.onMessageExternal` — fastest, requires
     `externally_connectable.matches` to include the page origin.
@@ -80,11 +81,11 @@ each rebuild.
 Install the SDK in your page project:
 
 ```bash
-pnpm add @aipexstudio/browser-cli-sdk
+pnpm add @qzsy/browser-cli-sdk
 ```
 
 ```ts
-import { createBrowserCli } from "@aipexstudio/browser-cli-sdk";
+import { createBrowserCli } from "@qzsy/browser-cli-sdk";
 
 const cli = await createBrowserCli({
   // Optional. If omitted only the content-bridge channel will be probed.

@@ -22,12 +22,16 @@ import {
   ToolNotFoundError,
 } from "./lib/tool-router";
 import { toolSchemas } from "./lib/tool-schemas";
+import { installBackgroundTabGuard } from "./lib/background-tab-guard";
 
 // 版本号直接来自 manifest.json，避免与 vite 的编译时 define 耦合。
 const EXT_VERSION = chrome.runtime.getManifest().version;
 
 // 启动时做一次 tool-router/tool-schemas 的名字漂移检查；仅 warn，不阻断。
 assertRouterSchemaConsistency(toolSchemas.map((s) => s.name));
+
+// Background 模式下，页面发起的 window.open / target=_blank 等打开行为改为背后打开。
+installBackgroundTabGuard();
 
 // ── 内部信封校验 ─────────────────────────────────────────────────────────
 function isCliRequest(msg: unknown): msg is BrowserCliRequest {
