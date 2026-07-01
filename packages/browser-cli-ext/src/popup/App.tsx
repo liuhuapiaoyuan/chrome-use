@@ -35,7 +35,8 @@ const MODE_LABELS: Record<
   },
   background: {
     title: "后台模式",
-    description: "静默执行，不切换窗口焦点；禁用截图与坐标工具",
+    description:
+      "仅标记偏好；每次 API 调用期间临时静默执行，调用结束后立即恢复，不影响日常浏览",
   },
 };
 

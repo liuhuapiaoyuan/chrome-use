@@ -1,4 +1,4 @@
-import { isBackgroundMode } from "@aipexstudio/browser-runtime/runtime/automation-mode";
+import { isTabGuardActive } from "./automation-preference";
 
 let lastFocusedWindowId: number | undefined;
 
@@ -15,7 +15,7 @@ async function initLastFocusedWindow(): Promise<void> {
 
 async function defocusNewTab(tab: chrome.tabs.Tab): Promise<void> {
   if (!tab.active || tab.id == null || tab.openerTabId == null) return;
-  if (!(await isBackgroundMode())) return;
+  if (!isTabGuardActive()) return;
 
   try {
     await chrome.tabs.update(tab.id, { active: false });
@@ -27,7 +27,7 @@ async function defocusNewTab(tab: chrome.tabs.Tab): Promise<void> {
 
 async function defocusNewWindow(win: chrome.windows.Window): Promise<void> {
   if (!win.focused || win.id == null) return;
-  if (!(await isBackgroundMode())) return;
+  if (!isTabGuardActive()) return;
 
   const restoreWindowId = lastFocusedWindowId;
   if (restoreWindowId == null || restoreWindowId === win.id) return;

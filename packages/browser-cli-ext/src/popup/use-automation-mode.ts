@@ -1,9 +1,10 @@
-import {
-  type AutomationMode,
-  STORAGE_KEYS,
-  validateAutomationMode,
-} from "@aipexstudio/aipex-core";
+import { type AutomationMode, validateAutomationMode } from "@aipexstudio/aipex-core";
 import { useCallback, useEffect, useState } from "react";
+import {
+  BROWSER_CLI_STORAGE_KEYS,
+  getAutomationPreference,
+  setAutomationPreference,
+} from "../lib/automation-preference";
 
 export function useAutomationMode(): [
   AutomationMode,
@@ -14,19 +15,17 @@ export function useAutomationMode(): [
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    void chrome.storage.local
-      .get(STORAGE_KEYS.AUTOMATION_MODE)
-      .then((result) => {
-        setMode(validateAutomationMode(result[STORAGE_KEYS.AUTOMATION_MODE]));
-        setLoading(false);
-      });
+    void getAutomationPreference().then((preference) => {
+      setMode(preference);
+      setLoading(false);
+    });
 
     const onChange = (
       changes: Record<string, chrome.storage.StorageChange>,
       area: string,
     ) => {
       if (area !== "local") return;
-      const change = changes[STORAGE_KEYS.AUTOMATION_MODE];
+      const change = changes[BROWSER_CLI_STORAGE_KEYS.AUTOMATION_PREFERENCE];
       if (change) {
         setMode(validateAutomationMode(change.newValue));
       }
@@ -37,7 +36,7 @@ export function useAutomationMode(): [
   }, []);
 
   const setAutomationMode = useCallback(async (next: AutomationMode) => {
-    await chrome.storage.local.set({ [STORAGE_KEYS.AUTOMATION_MODE]: next });
+    await setAutomationPreference(next);
     setMode(next);
   }, []);
 

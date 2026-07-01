@@ -8,6 +8,7 @@ import {
   getRecentCalls,
   logCall,
 } from "./lib/activity-log";
+import { runWithAutomationContext } from "./lib/automation-preference";
 import { installBackgroundTabGuard } from "./lib/background-tab-guard";
 import { BrowserCliParseError, parseCli } from "./lib/cli-parser";
 import { renderHelp, renderList, renderToolHelp } from "./lib/help";
@@ -23,6 +24,7 @@ import {
   PROTOCOL_NS,
   PROTOCOL_VERSION,
 } from "./types";
+import { STORAGE_KEYS } from "@aipexstudio/aipex-core";
 
 // 版本号直接来自 manifest.json，避免与 vite 的编译时 define 耦合。
 const EXT_VERSION = chrome.runtime.getManifest().version;
@@ -32,6 +34,9 @@ assertRouterSchemaConsistency(toolSchemas.map((s) => s.name));
 
 // Background 模式下，页面发起的 window.open / target=_blank 等打开行为改为背后打开。
 installBackgroundTabGuard();
+
+// 偏好与全局 automation_mode 分离；SW 启动时确保全局为 focus。
+void chrome.storage.local.set({ [STORAGE_KEYS.AUTOMATION_MODE]: "focus" });
 
 // ── 内部信封校验 ─────────────────────────────────────────────────────────
 function isCliRequest(msg: unknown): msg is BrowserCliRequest {
@@ -123,9 +128,11 @@ async function dispatch(
     return ok(req, help, cmd, start);
   }
 
-  // 工具调用
+  // 工具调用：后台偏好仅在单次 API 调用期间临时生效
   try {
-    const { tool, data } = await routeTool(cmd, args);
+    const { tool, data } = await runWithAutomationContext(() =>
+      routeTool(cmd, args),
+    );
     logCall({
       ts: Date.now(),
       tool,
