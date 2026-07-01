@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useState } from "react";
 import {
   type AutomationMode,
   STORAGE_KEYS,
   validateAutomationMode,
 } from "@aipexstudio/aipex-core";
+import { useCallback, useEffect, useState } from "react";
 
 export function useAutomationMode(): [
   AutomationMode,

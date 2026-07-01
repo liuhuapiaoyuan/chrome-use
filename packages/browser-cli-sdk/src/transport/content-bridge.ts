@@ -2,9 +2,9 @@
 // 任意网页都能用，无需扩展 ID。需要插件 content script 已注入到当前 origin。
 
 import {
+  BrowserCliError,
   type BrowserCliRequest,
   type BrowserCliResponse,
-  BrowserCliError,
   BrowserCliTimeoutError,
   PROTOCOL_NS,
   PROTOCOL_VERSION,
@@ -56,7 +56,10 @@ export class ContentBridgeTransport implements Transport {
     window.addEventListener("message", this.listener);
   }
 
-  send(request: BrowserCliRequest, timeoutMs: number): Promise<BrowserCliResponse> {
+  send(
+    request: BrowserCliRequest,
+    timeoutMs: number,
+  ): Promise<BrowserCliResponse> {
     this.ensureListener();
     return new Promise((resolve, reject) => {
       const timer = setTimeout(() => {

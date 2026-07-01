@@ -99,10 +99,10 @@ export function assertRouterSchemaConsistency(schemaNames: readonly string[]): {
   const missingImpls = [...schemas].filter((n) => !impls.has(n));
   if (missingSchemas.length || missingImpls.length) {
     // eslint-disable-next-line no-console
-    console.warn(
-      "[browser-cli] tool-router/tool-schemas drift:",
-      { missingSchemas, missingImpls },
-    );
+    console.warn("[browser-cli] tool-router/tool-schemas drift:", {
+      missingSchemas,
+      missingImpls,
+    });
   }
   return { missingSchemas, missingImpls };
 }

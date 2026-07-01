@@ -1,11 +1,12 @@
 // React + Vite 场景下的最小用法示例（片段）。
 // 复制到你的项目里即可；确保浏览器已安装 Browser-CLI 扩展。
-import { useEffect, useRef, useState } from "react";
+
 import {
-  createBrowserCli,
-  BrowserCliError,
   type BrowserCli,
+  BrowserCliError,
+  createBrowserCli,
 } from "@qzsy/browser-cli-sdk";
+import { useEffect, useRef, useState } from "react";
 
 export function CliDemo() {
   const cliRef = useRef<BrowserCli | null>(null);
@@ -23,7 +24,10 @@ export function CliDemo() {
           transport: "auto",
           timeoutMs: 15_000,
         });
-        if (disposed) { cli.dispose(); return; }
+        if (disposed) {
+          cli.dispose();
+          return;
+        }
         cliRef.current = cli;
         setChannel(cli.channel);
       } catch (e) {
@@ -53,7 +57,9 @@ export function CliDemo() {
 
   return (
     <div>
-      <p>通道: <b>{channel}</b></p>
+      <p>
+        通道: <b>{channel}</b>
+      </p>
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
         <button onClick={() => run((c) => c.list())}>list()</button>
         <button onClick={() => run((c) => c.help("create_new_tab"))}>
@@ -78,7 +84,9 @@ export function CliDemo() {
         </button>
         <button
           onClick={() =>
-            run((c) => c.exec("create_new_tab --url https://example.com --active true"))
+            run((c) =>
+              c.exec("create_new_tab --url https://example.com --active true"),
+            )
           }
         >
           create_new_tab (exec)

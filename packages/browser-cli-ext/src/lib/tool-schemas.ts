@@ -31,7 +31,10 @@ export const toolSchemas: ToolSchema[] = [
     inputSchema: {
       type: "object",
       properties: {
-        tabId: { type: "number", description: "The ID of the tab to switch to" },
+        tabId: {
+          type: "number",
+          description: "The ID of the tab to switch to",
+        },
       },
       required: ["tabId"],
     },
@@ -113,7 +116,10 @@ export const toolSchemas: ToolSchema[] = [
       properties: {
         tabId: { type: "number", description: "The ID of the tab" },
         uid: { type: "string", description: "Element UID from snapshot" },
-        dblClick: { type: "boolean", description: "Set true for double clicks" },
+        dblClick: {
+          type: "boolean",
+          description: "Set true for double clicks",
+        },
       },
       required: ["tabId", "uid"],
     },
@@ -216,7 +222,10 @@ export const toolSchemas: ToolSchema[] = [
           ],
           description: "The action to perform",
         },
-        coordinate: { type: "array", description: "[x, y] in screenshot pixels" },
+        coordinate: {
+          type: "array",
+          description: "[x, y] in screenshot pixels",
+        },
         text: { type: "string", description: "Text or key combo" },
         start_coordinate: {
           type: "array",
@@ -240,7 +249,8 @@ export const toolSchemas: ToolSchema[] = [
   // ===== Page Tools (4) =====
   {
     name: "get_page_metadata",
-    description: "Get page metadata including title, description, keywords, etc.",
+    description:
+      "Get page metadata including title, description, keywords, etc.",
     inputSchema: { type: "object", properties: {}, required: [] },
   },
   {
@@ -347,7 +357,8 @@ export const toolSchemas: ToolSchema[] = [
   },
   {
     name: "download_chat_images",
-    description: "Download multiple images from chat messages to local filesystem",
+    description:
+      "Download multiple images from chat messages to local filesystem",
     inputSchema: {
       type: "object",
       properties: {
@@ -400,7 +411,10 @@ export const toolSchemas: ToolSchema[] = [
       properties: {
         type: { type: "string", description: "Intervention type" },
         params: { description: "Type-specific parameters" },
-        timeout: { type: "number", description: "Timeout seconds (default 300)" },
+        timeout: {
+          type: "number",
+          description: "Timeout seconds (default 300)",
+        },
         reason: { type: "string", description: "Explanation shown to user" },
       },
       required: ["type"],

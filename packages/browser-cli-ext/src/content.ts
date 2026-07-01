@@ -54,7 +54,11 @@ window.addEventListener("message", (ev: MessageEvent) => {
   const data = ev.data as unknown;
   if (data === null || typeof data !== "object") return;
   const env = data as Partial<IncomingEnvelope>;
-  if (env.ns !== PROTOCOL_NS || env.v !== PROTOCOL_VERSION || env.dir !== "req") {
+  if (
+    env.ns !== PROTOCOL_NS ||
+    env.v !== PROTOCOL_VERSION ||
+    env.dir !== "req"
+  ) {
     return;
   }
   if (typeof env.requestId !== "string" || typeof env.command !== "string") {

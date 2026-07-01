@@ -1,4 +1,4 @@
-import { type AutomationMode } from "@aipexstudio/aipex-core";
+import type { AutomationMode } from "@aipexstudio/aipex-core";
 import { useCallback, useEffect, useState } from "react";
 import { useAutomationMode } from "./use-automation-mode";
 
@@ -86,8 +86,7 @@ export function App() {
         <span className="muted">v{state.version}</span>
       </div>
       <div className="muted intro">
-        网页自动化命令通道，可用工具{" "}
-        <strong>{state.toolCount}</strong> 个。
+        网页自动化命令通道，可用工具 <strong>{state.toolCount}</strong> 个。
       </div>
 
       <section className="card">

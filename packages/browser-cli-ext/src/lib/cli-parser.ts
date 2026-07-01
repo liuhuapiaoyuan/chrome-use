@@ -5,7 +5,7 @@
 // 类型推断依据 toolSchemas 的 inputSchema.properties[key].type：number/boolean/array/object
 // 会被自动转换；其他类型保留为字符串。逻辑移植自 mcp-bridge/src/cli.ts。
 
-import { toolSchemas, type ToolSchema } from "./tool-schemas";
+import { type ToolSchema, toolSchemas } from "./tool-schemas";
 
 export interface ParsedCli {
   command: string;

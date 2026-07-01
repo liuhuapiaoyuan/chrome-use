@@ -33,7 +33,7 @@
 
     <script type="module">
       // 生产用法：import { createBrowserCli } from '@qzsy/browser-cli-sdk';
-      import { createBrowserCli, BrowserCliError }
+      import { BrowserCliError, createBrowserCli }
         from '../../dist/index.js';
 
       const out = document.getElementById('out');
@@ -42,7 +42,7 @@
       const print = (label, value) => {
         const stamp = new Date().toLocaleTimeString();
         const body = typeof value === 'string' ? value : JSON.stringify(value, null, 2);
-        out.textContent = `[${stamp}] ${label}\n${body}\n\n` + out.textContent;
+        out.textContent = `[${stamp}] ${label}\n${body}\n\n${out.textContent}`;
       };
 
       let cli;

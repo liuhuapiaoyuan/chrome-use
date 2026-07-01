@@ -18,7 +18,9 @@ export const takeSnapshotTool = tool({
   execute: async ({ tabId }) => {
     try {
       const tab =
-        tabId !== undefined ? await chrome.tabs.get(tabId) : await getActiveTab();
+        tabId !== undefined
+          ? await chrome.tabs.get(tabId)
+          : await getActiveTab();
 
       if (!tab?.id) {
         return {

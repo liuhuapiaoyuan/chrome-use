@@ -1,12 +1,14 @@
 // BrowserCli 主类：协商传输通道、提供 exec / call / list / help 等 API。
 import { nanoid } from "nanoid";
-
+import { ContentBridgeTransport } from "./transport/content-bridge";
+import { ExternalConnectTransport } from "./transport/external-connect";
+import type { Transport } from "./transport/types";
 import {
+  BrowserCliError,
+  BrowserCliNotAvailableError,
   type BrowserCliOptions,
   type BrowserCliRequest,
   type BrowserCliResponse,
-  BrowserCliError,
-  BrowserCliNotAvailableError,
   type HelpOverview,
   PROTOCOL_NS,
   PROTOCOL_VERSION,
@@ -17,9 +19,6 @@ import {
   type ToolHelp,
   type ToolListEntry,
 } from "./types";
-import { ContentBridgeTransport } from "./transport/content-bridge";
-import { ExternalConnectTransport } from "./transport/external-connect";
-import type { Transport } from "./transport/types";
 
 const DEFAULT_TIMEOUT_MS = 30_000;
 const DEFAULT_HANDSHAKE_TIMEOUT_MS = 500;
@@ -41,7 +40,9 @@ export class BrowserCli {
 
     if (transport === "external" || transport === "auto") {
       if (options.extensionId) {
-        candidates.push(() => new ExternalConnectTransport(options.extensionId!));
+        candidates.push(
+          () => new ExternalConnectTransport(options.extensionId!),
+        );
       }
     }
     if (transport === "content" || transport === "auto") {
@@ -87,7 +88,10 @@ export class BrowserCli {
   }
 
   /** 直接以对象参数调用一个工具。 */
-  async call(name: string, args: Record<string, unknown> = {}): Promise<unknown> {
+  async call(
+    name: string,
+    args: Record<string, unknown> = {},
+  ): Promise<unknown> {
     if (!name) throw new BrowserCliError("EMPTY_TOOL", "Tool name is empty");
     return this.invoke({
       ns: PROTOCOL_NS,

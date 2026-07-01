@@ -3,26 +3,26 @@
 // 由 content.ts 桥接 postMessage 转发）。所有调用统一走 dispatch()。
 
 import {
-  type BrowserCliRequest,
-  type BrowserCliResponse,
-  PROTOCOL_NS,
-  PROTOCOL_VERSION,
-} from "./types";
-import { parseCli, BrowserCliParseError } from "./lib/cli-parser";
-import { renderHelp, renderList, renderToolHelp } from "./lib/help";
-import {
-  logCall,
-  getRecentCalls,
-  getOriginSummary,
   clearLog,
+  getOriginSummary,
+  getRecentCalls,
+  logCall,
 } from "./lib/activity-log";
+import { installBackgroundTabGuard } from "./lib/background-tab-guard";
+import { BrowserCliParseError, parseCli } from "./lib/cli-parser";
+import { renderHelp, renderList, renderToolHelp } from "./lib/help";
 import {
   assertRouterSchemaConsistency,
   routeTool,
   ToolNotFoundError,
 } from "./lib/tool-router";
 import { toolSchemas } from "./lib/tool-schemas";
-import { installBackgroundTabGuard } from "./lib/background-tab-guard";
+import {
+  type BrowserCliRequest,
+  type BrowserCliResponse,
+  PROTOCOL_NS,
+  PROTOCOL_VERSION,
+} from "./types";
 
 // 版本号直接来自 manifest.json，避免与 vite 的编译时 define 耦合。
 const EXT_VERSION = chrome.runtime.getManifest().version;
@@ -45,7 +45,12 @@ function isCliRequest(msg: unknown): msg is BrowserCliRequest {
   );
 }
 
-function ok(req: BrowserCliRequest, data: unknown, tool: string, start: number): BrowserCliResponse {
+function ok(
+  req: BrowserCliRequest,
+  data: unknown,
+  tool: string,
+  start: number,
+): BrowserCliResponse {
   return {
     ns: PROTOCOL_NS,
     v: PROTOCOL_VERSION,
@@ -86,8 +91,7 @@ async function dispatch(
       cmd = parsed.command;
       args = parsed.args;
     } catch (e) {
-      const code =
-        e instanceof BrowserCliParseError ? e.code : "PARSE_FAILED";
+      const code = e instanceof BrowserCliParseError ? e.code : "PARSE_FAILED";
       const message = e instanceof Error ? e.message : String(e);
       logCall({
         ts: Date.now(),
@@ -133,8 +137,7 @@ async function dispatch(
     });
     return ok(req, data, tool, start);
   } catch (e) {
-    const code =
-      e instanceof ToolNotFoundError ? e.code : "EXEC_FAILED";
+    const code = e instanceof ToolNotFoundError ? e.code : "EXEC_FAILED";
     const message = e instanceof Error ? e.message : String(e);
     logCall({
       ts: Date.now(),
@@ -151,15 +154,17 @@ async function dispatch(
 }
 
 // ── 通道 A：外部网页直连 ─────────────────────────────────────────────────
-chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => {
-  if (!isCliRequest(message)) return false;
-  const origin = sender.origin ?? sender.url ?? undefined;
-  dispatch(message, {
-    channel: "external",
-    ...(origin !== undefined ? { origin } : {}),
-  }).then(sendResponse);
-  return true; // 异步响应
-});
+chrome.runtime.onMessageExternal.addListener(
+  (message, sender, sendResponse) => {
+    if (!isCliRequest(message)) return false;
+    const origin = sender.origin ?? sender.url ?? undefined;
+    dispatch(message, {
+      channel: "external",
+      ...(origin !== undefined ? { origin } : {}),
+    }).then(sendResponse);
+    return true; // 异步响应
+  },
+);
 
 // ── 通道 B：content-script 桥接 ────────────────────────────────────────
 // Popup 与 content-bridge 共用 chrome.runtime.onMessage。

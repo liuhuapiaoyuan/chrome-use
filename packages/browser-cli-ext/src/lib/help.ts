@@ -1,5 +1,5 @@
 // 帮助文本与工具列表的统一渲染。所有元命令返回结构化 JSON，避免依赖终端格式化。
-import { toolSchemas, type ToolSchema } from "./tool-schemas";
+import { type ToolSchema, toolSchemas } from "./tool-schemas";
 
 export interface ToolHelp {
   name: string;

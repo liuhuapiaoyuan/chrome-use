@@ -2,9 +2,9 @@
 // 仅在网页满足扩展 manifest 的 externally_connectable.matches 时可用。
 
 import {
+  BrowserCliError,
   type BrowserCliRequest,
   type BrowserCliResponse,
-  BrowserCliError,
   BrowserCliTimeoutError,
   PROTOCOL_NS,
   PROTOCOL_VERSION,
@@ -32,7 +32,10 @@ export class ExternalConnectTransport implements Transport {
 
   constructor(private readonly extensionId: string) {}
 
-  send(request: BrowserCliRequest, timeoutMs: number): Promise<BrowserCliResponse> {
+  send(
+    request: BrowserCliRequest,
+    timeoutMs: number,
+  ): Promise<BrowserCliResponse> {
     return new Promise((resolve, reject) => {
       const runtime = getRuntime();
       if (!runtime) {
