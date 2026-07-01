@@ -18,11 +18,12 @@ const TOKEN_PATTERN =
 /** 按空白拆分，支持单/双引号包裹的整段值。 */
 export function tokenize(raw: string): string[] {
   const tokens: string[] = [];
-  let m: RegExpExecArray | null;
   TOKEN_PATTERN.lastIndex = 0;
-  while ((m = TOKEN_PATTERN.exec(raw)) !== null) {
+  let m = TOKEN_PATTERN.exec(raw);
+  while (m !== null) {
     const token = m[1] ?? m[2] ?? m[3] ?? "";
     tokens.push(token);
+    m = TOKEN_PATTERN.exec(raw);
   }
   return tokens;
 }

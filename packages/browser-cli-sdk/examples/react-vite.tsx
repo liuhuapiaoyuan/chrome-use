@@ -61,14 +61,23 @@ export function CliDemo() {
         通道: <b>{channel}</b>
       </p>
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-        <button onClick={() => run((c) => c.list())}>list()</button>
-        <button onClick={() => run((c) => c.help("create_new_tab"))}>
+        <button type="button" onClick={() => run((c) => c.list())}>
+          list()
+        </button>
+        <button
+          type="button"
+          onClick={() => run((c) => c.help("create_new_tab"))}
+        >
           help(&apos;create_new_tab&apos;)
         </button>
-        <button onClick={() => run((c) => c.call("get_all_tabs", {}))}>
+        <button
+          type="button"
+          onClick={() => run((c) => c.call("get_all_tabs", {}))}
+        >
           get_all_tabs
         </button>
         <button
+          type="button"
           onClick={() =>
             run(async (c) => {
               const tabs = (await c.call("get_all_tabs", {})) as {
@@ -83,6 +92,7 @@ export function CliDemo() {
           take_snapshot
         </button>
         <button
+          type="button"
           onClick={() =>
             run((c) =>
               c.exec("create_new_tab --url https://example.com --active true"),
