@@ -39,6 +39,7 @@ export function renderHelp(version: string): HelpOverview {
       "browser-cli get_all_tabs",
       "browser-cli create_new_tab --url https://example.com",
       'browser-cli search_elements --tabId 123 --query "{button,input}*"',
+      "browser-cli take_snapshot --tabId 123",
       "browser-cli capture_screenshot",
     ],
     meta: {

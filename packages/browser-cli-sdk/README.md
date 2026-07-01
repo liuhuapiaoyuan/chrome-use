@@ -44,13 +44,19 @@ const cli = await createBrowserCli({
 
 // 1) String / CLI style
 await cli.exec("-h");                         // help overview
-await cli.exec("--list");                     // list of 28 tools
+await cli.exec("--list");                     // list of 29 tools
 await cli.exec("--help create_new_tab");      // single-tool help
 await cli.exec("create_new_tab --url https://example.com");
+await cli.exec("take_snapshot --tabId 123");
 
 // 2) Object / typed style
 const tabs = await cli.call("get_all_tabs", {});
 const created = await cli.call("create_new_tab", { url: "https://example.com" });
+const snapshot = await cli.takeSnapshot({ tabId: 123 });
+const matches = await cli.searchElements({
+  tabId: 123,
+  query: "{button,input}*",
+});
 
 // 3) Meta APIs
 const overview = await cli.help();
@@ -79,10 +85,33 @@ cli.dispose();
 |-------------------------------------|-------------------------------------------------|
 | `exec(raw: string)`                 | `Promise<unknown>` — runs a raw CLI string.     |
 | `call(name, args = {})`             | `Promise<unknown>` — invokes a tool by name.    |
+| `takeSnapshot({ tabId })`           | `Promise<TakeSnapshotResult>` — full page DOM snapshot. |
+| `searchElements({ tabId, query, … })` | `Promise<SearchElementsResult>` — search snapshot. |
 | `list()`                            | `Promise<{ tools: ToolListEntry[]; count }>`    |
 | `help(name?)`                       | `Promise<HelpOverview \| ToolHelp>`             |
 | `channel`                           | `"external" \| "content"` — negotiated channel. |
 | `dispose()`                         | `void` — removes listeners, cancels pending.    |
+
+### Typed tool helpers
+
+```ts
+import type {
+  TakeSnapshotArgs,
+  TakeSnapshotResult,
+  SearchElementsArgs,
+  SearchElementsResult,
+} from "@qzsy/browser-cli-sdk";
+
+const { snapshot, title, url } = await cli.takeSnapshot({ tabId: 123 });
+const { data } = await cli.searchElements({
+  tabId: 123,
+  query: "*登录*",
+  contextLevels: 2,
+});
+```
+
+`TakeSnapshotResult.snapshot` is the full formatted accessibility-style DOM tree text.
+Use `searchElements` when you only need matching lines (lower token cost).
 
 ### Errors
 

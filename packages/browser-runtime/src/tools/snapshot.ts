@@ -6,28 +6,63 @@ import { getActiveTab } from "./tab-utils";
 export const takeSnapshotTool = tool({
   name: "take_snapshot",
   description:
-    "Take an accessibility snapshot of the current page. Returns a tree of interactive elements with UIDs for interaction.",
-  parameters: z.object({}),
-  execute: async () => {
-    const tab = await getActiveTab();
+    "Take a full accessibility-style DOM snapshot of a page. Returns the complete formatted tree with element UIDs for reading or follow-up interaction. Prefer search_elements when you only need to locate specific controls.",
+  parameters: z.object({
+    tabId: z
+      .number()
+      .optional()
+      .describe(
+        "The ID of the tab to snapshot. Defaults to the current active tab when omitted.",
+      ),
+  }),
+  execute: async ({ tabId }) => {
+    try {
+      const tab =
+        tabId !== undefined ? await chrome.tabs.get(tabId) : await getActiveTab();
 
-    if (!tab.id) {
-      throw new Error("No active tab found");
+      if (!tab?.id) {
+        return {
+          success: false,
+          message: "No accessible tab found",
+          tabId: tabId ?? 0,
+          title: "",
+          url: "",
+          snapshot: "",
+        };
+      }
+
+      const snapshot = await snapshotProvider.createSnapshot(tab.id);
+      if (!snapshot) {
+        return {
+          success: false,
+          message: "Failed to create snapshot",
+          tabId: tab.id,
+          title: tab.title || "",
+          url: tab.url || "",
+          snapshot: "",
+        };
+      }
+
+      const snapshotText = snapshotProvider.formatSnapshot(snapshot);
+
+      return {
+        success: true,
+        message: "Snapshot captured successfully",
+        tabId: tab.id,
+        title: tab.title || "",
+        url: tab.url || "",
+        snapshot: snapshotText,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: `Error: ${error instanceof Error ? error.message : "Unknown error"}`,
+        tabId: tabId ?? 0,
+        title: "",
+        url: "",
+        snapshot: "",
+      };
     }
-
-    const snapshot = await snapshotProvider.createSnapshot(tab.id);
-    if (!snapshot) {
-      throw new Error("Failed to create snapshot");
-    }
-    const snapshotText = snapshotProvider.formatSnapshot(snapshot);
-
-    return {
-      success: true,
-      tabId: tab.id,
-      title: tab.title || "",
-      url: tab.url || "",
-      snapshot: snapshotText,
-    };
   },
 });
 

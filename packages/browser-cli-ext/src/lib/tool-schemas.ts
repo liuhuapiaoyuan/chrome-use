@@ -1,4 +1,4 @@
-// 28 个 non-skill 工具的静态 JSON Schema，用于参数类型推断、--list / --help 渲染。
+// 29 个 non-skill 工具的静态 JSON Schema，用于参数类型推断、--list / --help 渲染。
 // 内容来源于 mcp-bridge/src/tool-schemas.ts，已裁剪掉 organize_tabs、download_text_as_markdown
 // 等未启用工具，以及 6 个 skill_* 工具（后者需 QuickJS/emscripten VM，与本插件轻量化目标冲突）。
 
@@ -75,7 +75,19 @@ export const toolSchemas: ToolSchema[] = [
     inputSchema: { type: "object", properties: {}, required: [] },
   },
 
-  // ===== UI Operations (8) =====
+  // ===== UI Operations (9) =====
+  {
+    name: "take_snapshot",
+    description:
+      "Capture the full accessibility-style DOM snapshot for a tab. Returns the complete formatted tree with element UIDs for reading or follow-up interaction.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        tabId: { type: "number", description: "The ID of the tab to snapshot" },
+      },
+      required: ["tabId"],
+    },
+  },
   {
     name: "search_elements",
     description:

@@ -1,4 +1,4 @@
-// 工具路由：直接从 browser-runtime 各分组按需导入 28 个非-skill 工具。
+// 工具路由：直接从 browser-runtime 各分组按需导入 29 个非-skill 工具。
 // 故意不 import `allBrowserTools`，因为它静态引用 skillTools -> QuickJS/emscripten VM，
 // 会把扩展 bundle 从 ~150KB 拉到 ~5MB（含 wasm）。skill 属于 Agent 系统，不属于本插件职责。
 import type { FunctionTool } from "@aipexstudio/aipex-core";
@@ -22,7 +22,10 @@ import {
   captureScreenshotWithHighlightTool,
   captureTabScreenshotTool,
 } from "@aipexstudio/browser-runtime/tools/screenshot";
-import { searchElementsTool } from "@aipexstudio/browser-runtime/tools/snapshot";
+import {
+  searchElementsTool,
+  takeSnapshotTool,
+} from "@aipexstudio/browser-runtime/tools/snapshot";
 import {
   closeTabTool,
   createNewTabTool,
@@ -38,7 +41,7 @@ import {
 } from "@aipexstudio/browser-runtime/tools/tools/downloads";
 import { uploadFileToInputTool } from "@aipexstudio/browser-runtime/tools/tools/upload-file";
 
-// 28 个工具（7 tab + 8 UI + 4 page + 3 screenshot + 2 download + 4 intervention）。
+// 29 个工具（7 tab + 9 UI + 4 page + 3 screenshot + 2 download + 4 intervention）。
 // Skill (6) 因引入 VM 已被剔除。
 // 用 `as unknown as FunctionTool` 双转换消除 zod schema 泛型不匹配，与
 // packages/browser-runtime/src/tools/index.ts 中 allBrowserTools 的做法保持一致。
@@ -51,7 +54,8 @@ const nonSkillBrowserTools: FunctionTool[] = [
   getTabInfoTool as unknown as FunctionTool,
   closeTabTool as unknown as FunctionTool,
   ungroupTabsTool as unknown as FunctionTool,
-  // UI (8)
+  // UI (9)
+  takeSnapshotTool as unknown as FunctionTool,
   searchElementsTool as unknown as FunctionTool,
   clickTool as unknown as FunctionTool,
   fillElementByUidTool as unknown as FunctionTool,

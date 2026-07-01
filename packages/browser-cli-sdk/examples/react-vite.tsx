@@ -64,6 +64,20 @@ export function CliDemo() {
         </button>
         <button
           onClick={() =>
+            run(async (c) => {
+              const tabs = (await c.call("get_all_tabs", {})) as {
+                tabs: Array<{ id: number }>;
+              };
+              const tabId = tabs.tabs[0]?.id;
+              if (!tabId) return { error: "no tabs" };
+              return c.takeSnapshot({ tabId });
+            })
+          }
+        >
+          take_snapshot
+        </button>
+        <button
+          onClick={() =>
             run((c) => c.exec("create_new_tab --url https://example.com --active true"))
           }
         >

@@ -87,3 +87,10 @@ export interface ToolHelp {
     enum?: string[];
   }>;
 }
+
+export type {
+  SearchElementsArgs,
+  SearchElementsResult,
+  TakeSnapshotArgs,
+  TakeSnapshotResult,
+} from "./tool-results";

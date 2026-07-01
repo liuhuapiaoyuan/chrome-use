@@ -5,7 +5,7 @@ any web page through a single command channel — no Agent, no LLM, no chat UI.
 
 It is the runtime counterpart of [`@qzsy/browser-cli-sdk`](../browser-cli-sdk/README.md).
 Web pages send `browser-cli` envelopes; this extension parses them, calls one of
-the 28 tools from `@aipexstudio/browser-runtime`, and returns a structured result.
+the 29 tools from `@aipexstudio/browser-runtime`, and returns a structured result.
 
 ```
 +-------------+   external-connect    +----------------------+
@@ -16,7 +16,7 @@ the 28 tools from `@aipexstudio/browser-runtime`, and returns a structured resul
                                        +----------------------+
                                                 |
                                                 v
-                                       browser-runtime tools (28)
+                                       browser-runtime tools (29)
                                        @aipexstudio/browser-runtime
 ```
 
@@ -24,7 +24,7 @@ the 28 tools from `@aipexstudio/browser-runtime`, and returns a structured resul
 
 ## Features
 
-- **28 tools** — tabs, DOM interaction, page inspection, screenshots, downloads,
+- **29 tools** — tabs, DOM interaction, page inspection, screenshots, downloads,
   human intervention. Sourced verbatim from `@aipexstudio/browser-runtime` via
   per-group deep imports (Skill tools are intentionally excluded because they
   pull in a QuickJS/emscripten VM and violate the "lightweight channel" goal —
@@ -178,7 +178,7 @@ src/
 
 ## Permissions
 
-The manifest declares the union of permissions needed by the 28 tools:
+The manifest declares the union of permissions needed by the 29 tools:
 
 ```
 tabs, windows, tabGroups, activeTab, bookmarks, history, scripting, storage,

@@ -10,6 +10,10 @@ import {
   type HelpOverview,
   PROTOCOL_NS,
   PROTOCOL_VERSION,
+  type SearchElementsArgs,
+  type SearchElementsResult,
+  type TakeSnapshotArgs,
+  type TakeSnapshotResult,
   type ToolHelp,
   type ToolListEntry,
 } from "./types";
@@ -92,6 +96,24 @@ export class BrowserCli {
       command: name,
       args,
     });
+  }
+
+  /** 获取指定标签页的完整无障碍风格 DOM 快照。 */
+  async takeSnapshot(args: TakeSnapshotArgs): Promise<TakeSnapshotResult> {
+    return (await this.call(
+      "take_snapshot",
+      args as unknown as Record<string, unknown>,
+    )) as TakeSnapshotResult;
+  }
+
+  /** 在页面快照中按 glob/grep 模式搜索元素。 */
+  async searchElements(
+    args: SearchElementsArgs,
+  ): Promise<SearchElementsResult> {
+    return (await this.call(
+      "search_elements",
+      args as unknown as Record<string, unknown>,
+    )) as SearchElementsResult;
   }
 
   /** 列出可用工具与简要说明。 */

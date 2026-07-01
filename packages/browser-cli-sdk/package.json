@@ -1,6 +1,6 @@
 {
   "name": "@qzsy/browser-cli-sdk",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "JS-SDK to call the Browser-CLI chrome extension from any web page (browser-cli <command> [args]).",
   "license": "MIT",
   "author": "AIPex Studio",
