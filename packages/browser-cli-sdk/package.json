@@ -1,0 +1,42 @@
+{
+  "name": "@aipexstudio/browser-cli-sdk",
+  "version": "0.1.0",
+  "description": "JS-SDK to call the Browser-CLI chrome extension from any web page (browser-cli <command> [args]).",
+  "license": "MIT",
+  "author": "AIPex Studio",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": ["dist", "README.md"],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "nanoid": "^5.1.7"
+  },
+  "devDependencies": {
+    "@types/chrome": "0.1.38",
+    "tsup": "^8.0.0",
+    "typescript": "^5.9.3"
+  },
+  "keywords": [
+    "browser-cli",
+    "browser-automation",
+    "chrome-extension",
+    "aipex",
+    "sdk"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

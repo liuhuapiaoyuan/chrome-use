@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <title>Browser-CLI SDK — Vanilla Example</title>
+    <style>
+      body { font: 14px/1.5 system-ui, sans-serif; margin: 24px; max-width: 860px; }
+      h1 { font-size: 18px; margin: 0 0 12px; }
+      .row { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0; }
+      button { padding: 6px 12px; cursor: pointer; }
+      pre { background: #0b1021; color: #e6edf3; padding: 12px; border-radius: 6px;
+            max-height: 420px; overflow: auto; white-space: pre-wrap; word-break: break-all; }
+      .meta { color: #666; font-size: 12px; }
+      .err { color: #c00; }
+    </style>
+  </head>
+  <body>
+    <h1>Browser-CLI SDK — Vanilla Example</h1>
+    <div class="meta" id="status">初始化中…</div>
+
+    <div class="row">
+      <button data-act="list">list()</button>
+      <button data-act="help">help()</button>
+      <button data-act="help-tool">help('create_new_tab')</button>
+      <button data-act="tabs">call('get_all_tabs')</button>
+      <button data-act="cur">exec('get_current_tab')</button>
+      <button data-act="new">exec('create_new_tab --url ...')</button>
+      <button data-act="err">exec('not_a_tool')</button>
+      <button data-act="clear">清空输出</button>
+    </div>
+
+    <pre id="out">(还没有输出)</pre>
+
+    <script type="module">
+      // 生产用法：import { createBrowserCli } from '@aipexstudio/browser-cli-sdk';
+      import { createBrowserCli, BrowserCliError }
+        from '../../dist/index.js';
+
+      const out = document.getElementById('out');
+      const status = document.getElementById('status');
+
+      const print = (label, value) => {
+        const stamp = new Date().toLocaleTimeString();
+        const body = typeof value === 'string' ? value : JSON.stringify(value, null, 2);
+        out.textContent = `[${stamp}] ${label}\n${body}\n\n` + out.textContent;
+      };
+
+      let cli;
+      try {
+        cli = await createBrowserCli({
+          // extensionId: 'abcdefghijklmnop...',  // 可选：显式指定则走 external 直连
+          transport: 'auto',
+          timeoutMs: 15_000,
+        });
+        status.textContent = `已连接（通道: ${cli.channel}）`;
+      } catch (e) {
+        status.innerHTML = `<span class="err">未连接：${e.message}</span>`;
+        throw e;
+      }
+
+      const actions = {
+        list:      () => cli.list(),
+        help:      () => cli.help(),
+        'help-tool': () => cli.help('create_new_tab'),
+        tabs:      () => cli.call('get_all_tabs', {}),
+        cur:       () => cli.exec('get_current_tab'),
+        new:       () => cli.exec('create_new_tab --url https://example.com --active true'),
+        err:       () => cli.exec('not_a_tool'),
+      };
+
+      document.querySelectorAll('button[data-act]').forEach((btn) => {
+        btn.addEventListener('click', async () => {
+          const act = btn.dataset.act;
+          if (act === 'clear') { out.textContent = ''; return; }
+          try {
+            const data = await actions[act]();
+            print(`✓ ${btn.textContent}`, data);
+          } catch (e) {
+            if (e instanceof BrowserCliError) {
+              print(`✗ ${btn.textContent} [${e.code}]`, e.message);
+            } else {
+              print(`✗ ${btn.textContent}`, String(e));
+            }
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
