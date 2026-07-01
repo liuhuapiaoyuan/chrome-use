@@ -2,6 +2,7 @@
 // 同时监听通道 A（onMessageExternal，来自外部网页直接调用）和通道 B（onMessage，
 // 由 content.ts 桥接 postMessage 转发）。所有调用统一走 dispatch()。
 
+import { STORAGE_KEYS } from "@aipexstudio/aipex-core";
 import {
   clearLog,
   getOriginSummary,
@@ -24,7 +25,6 @@ import {
   PROTOCOL_NS,
   PROTOCOL_VERSION,
 } from "./types";
-import { STORAGE_KEYS } from "@aipexstudio/aipex-core";
 
 // 版本号直接来自 manifest.json，避免与 vite 的编译时 define 耦合。
 const EXT_VERSION = chrome.runtime.getManifest().version;

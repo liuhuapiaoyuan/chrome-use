@@ -1,4 +1,7 @@
-import { type AutomationMode, validateAutomationMode } from "@aipexstudio/aipex-core";
+import {
+  type AutomationMode,
+  validateAutomationMode,
+} from "@aipexstudio/aipex-core";
 import { useCallback, useEffect, useState } from "react";
 import {
   BROWSER_CLI_STORAGE_KEYS,
